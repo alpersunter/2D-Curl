@@ -1,0 +1,61 @@
+
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <script src="p5.js"></script>
+        <script src="sketch.js"></script>
+        <style>
+        body {
+          margin: 0;
+          padding: 0;
+        }
+    
+        canvas {
+          display: block;
+        }
+    
+        #info {
+          height: 100%;
+          width: 10%;
+          background-color: black;
+        }
+    
+        table {
+          position: relative;
+          max-width: 100%;
+          -webkit-text-fill-color: azure;
+          text-align: center;
+          font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+          font-size:large;
+        }
+        div{
+          position:relative;
+          float:left;
+        }
+        input{
+          color:black;
+        }
+      </style>
+    </head>
+    
+    <body>
+      <div id="info">
+        <table>
+          <tr>
+            <td><input type="button" value="Çizdir" /></td>
+          </tr>
+          <tr>
+            <td>V_x:</td>
+          </tr>
+          <tr>
+            <td><input type="text"></td>
+          </tr>
+        </table>
+      </div>
+
+      <div id="myCanvas"> </div>
+    
+    </body>
+    
+    </html>
