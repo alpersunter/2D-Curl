@@ -1,10 +1,14 @@
 let myCanvas;
 let disk;
+let Vx;
+let Vy;
 function setup() {
     myCanvas = createCanvas(windowWidth*.9, windowHeight);
     disk = new Disk2D(80, 5);
-    disk.V_x = ((x, y) => Math.cos(x+2*y));
-    disk.V_y = ((x, y) => Math.sin(x-2*y));
+    Vx = ((x, y) => Math.cos(x+2*y));
+    Vy = ((x, y) => Math.sin(x-2*y));
+    disk.V_x = Vx;
+    disk.V_y = Vy;
 }
 
 
@@ -12,7 +16,7 @@ function setup() {
 function draw(){
     background(0);
     translate(width/2.0, height/2.0);
-    drawVectorField(((x, y) => Math.cos(x+2*y)),((x, y) => Math.sin(x-2*y)));
+    drawVectorField(Vx, Vy);
     stroke(255,0,0);
     strokeWeight(3);
     fill(255,200);
@@ -20,6 +24,16 @@ function draw(){
     textAlign(CENTER, CENTER);
     disk.update();
     disk.show();
+}
+
+function vectorFieldChanged(v_x, v_y){
+    let Vxx = new Function("x", "y", "return "+ v_x);
+    let Vyy = new Function("x", "y", "return "+ v_y);
+    disk.V_x = Vxx;
+    disk.V_y = Vyy;
+    Vx = Vxx;
+    Vy = Vyy;
+    disk.stop();
 }
 
 class Disk2D{
@@ -45,10 +59,13 @@ class Disk2D{
             // reposition and reset
             this.position.x = mouseX - width/2.0;
             this.position.y = mouseY - height/2.0;
-            this.angularVelocity = 0;
-            this.angle = 0;
-            this.netTorque = 0;
+            this.stop();
         }
+    }
+    stop(){
+        this.angularVelocity = 0;
+        this.angle = 0;
+        this.netTorque = 0;
     }
     show(){
         if(this.mouseHovers()){
@@ -69,9 +86,9 @@ function drawVectorField(V_x, V_y){
     let arrowSpacing = 100.0;
     for(let x = -width/2.0; x <= width/2; x+=arrowSpacing){
         for(let y = -height/2.0; y <= height/2.0; y+= arrowSpacing){
-            translate(-x, -y);
-            createVector(V_x(x, y), V_y(x, y)).normalize().mult(40).show();
             translate(x, y);
+            createVector(V_x(x, y), V_y(x, y)).normalize().mult(40).show();
+            translate(-x, -y);
     }}
 }
 
@@ -94,7 +111,7 @@ p5.Vector.prototype.show = (function(){
 function arrow(vector_2d, isStroke){
     let L = vector_2d.mag();
     push();
-        rotate(vector_2d.heading());
+        rotate(-vector_2d.heading());
         let x_tri = L*0.6;
         line(0,0, x_tri, 0);
         let y_tri = (L-x_tri)/1.71;
